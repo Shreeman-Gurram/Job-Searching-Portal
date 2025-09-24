@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobHub - Jobs Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body data-api-key="demo-key-123">
+    <header class="topbar">
+        <div class="container nav">
+            <button class="brand" id="homeBtn" title="Home">JobHub</button>
+            <nav class="nav-links">
+                <a href="#jobs" data-nav="jobs">Jobs</a>
+                <a href="#companies" data-nav="companies">Companies</a>
+                <a href="#salary" data-nav="salary">Salary</a>
+                <a href="#resources" data-nav="resources">Resources</a>
+            </nav>
+            <div class="actions">
+                <select id="roleSelect" title="Role">
+                    <option value="seeker">Job Seeker</option>
+                    <option value="recruiter">Recruiter</option>
+                </select>
+                <button class="btn ghost">Sign In</button>
+                <button class="btn primary" id="postJobBtn">Post a Job</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="jobs" class="container layout">
+        <aside class="sidebar" id="filters">
+            <div class="card">
+                <h3>Job Type</h3>
+                <div class="filter-group" id="filter-type"></div>
+                <div style="margin-top:8px; display:flex; justify-content:flex-end">
+                    <button id="clearFilters" class="btn" style="padding:6px 10px">Clear Filters</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Location</h3>
+                <div class="filter-group" id="filter-location"></div>
+            </div>
+            <div class="card">
+                <h3>Experience Level</h3>
+                <div class="filter-group" id="filter-experience"></div>
+            </div>
+            <div class="card">
+                <h3>Sort By</h3>
+                <select id="sortSelect" class="input">
+                    <option value="dateDesc">Date: Newest</option>
+                    <option value="dateAsc">Date: Oldest</option>
+                    <option value="salaryDesc">Salary: High to Low</option>
+                    <option value="salaryAsc">Salary: Low to High</option>
+                    <option value="titleAsc">Title A-Z</option>
+                    <option value="titleDesc">Title Z-A</option>
+                </select>
+            </div>
+        </aside>
+
+        <section class="main">
+            <div class="list-header">
+                <div>
+                    <h2>Latest Job Openings</h2>
+                    <p id="jobsCount">0 jobs found</p>
+                </div>
+                <div class="searchbar">
+                    <input id="searchInput" class="input" placeholder="Search roles, companies, tags..." />
+                    <button class="btn">Search</button>
+                </div>
+            </div>
+            <div id="jobsList" class="jobs"></div>
+        </section>
+
+        <aside class="details">
+            <div id="detailsCard" class="card details-card empty">
+                <div class="empty-state">
+                    <h3>Select a job to view details</h3>
+                    <p>Click any job from the list to preview description, requirements and benefits.</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <section id="companies" class="container" style="padding: 8px 0 24px">
+        <div class="card">
+            <h3>Companies</h3>
+            <div class="grid-2">
+                <select id="companySelect" class="input">
+                    <option value="all">All Companies</option>
+                </select>
+                <button id="clearCompany" class="btn">Clear</button>
+            </div>
+            <p style="margin-top:8px;color:#475569">Choose a company to filter jobs in the list above.</p>
+        </div>
+    </section>
+    <section id="salary" class="container" style="padding: 0 0 24px">
+        <div class="card">
+            <h3>Salary Range</h3>
+            <div class="grid-2">
+                <input id="salaryMin" type="number" class="input" placeholder="Min ($)">
+                <input id="salaryMax" type="number" class="input" placeholder="Max ($)">
+            </div>
+            <div style="margin-top:8px; display:flex; gap:8px">
+                <button id="applySalary" class="btn primary">Apply Salary Filter</button>
+                <button id="clearSalary" class="btn">Clear</button>
+            </div>
+        </div>
+    </section>
+    <section id="resources" class="container" style="padding: 0 0 40px">
+        <div class="card">
+            <h3>Applications</h3>
+            <div class="grid-2">
+                <select id="applicationsSort" class="input">
+                    <option value="dateDesc">Newest</option>
+                    <option value="dateAsc">Oldest</option>
+                    <option value="titleAsc">Title A-Z</option>
+                    <option value="titleDesc">Title Z-A</option>
+                </select>
+                <button id="clearApplications" class="btn">Clear Applications</button>
+            </div>
+            <div id="applicationsList" style="margin-top:10px"></div>
+        </div>
+    </section>
+
+    <div class="modal hidden" id="jobModal" aria-hidden="true">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h3 id="modalTitle">Post a Job</h3>
+                <button class="icon-btn" id="modalClose">✕</button>
+            </div>
+            <form id="jobForm" class="form">
+                <input class="input" name="title" placeholder="Job Title" required />
+                <input class="input" name="company" placeholder="Company" required />
+                <div class="grid-2">
+                    <input class="input" name="location" placeholder="Location (e.g., San Francisco)" required />
+                    <select class="input" name="employment_type" required>
+                        <option value="Full Time">Full Time</option>
+                        <option value="Part Time">Part Time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Remote">Remote</option>
+                    </select>
+                </div>
+                <div class="grid-2">
+                    <input class="input" name="salary_min" placeholder="Min Salary" type="number" required />
+                    <input class="input" name="salary_max" placeholder="Max Salary" type="number" required />
+                </div>
+                <input class="input" name="tags" placeholder="Tags (comma separated)" />
+                <textarea class="input" name="description" placeholder="Job Description" rows="4" required></textarea>
+                <textarea class="input" name="requirements" placeholder="Requirements (one per line)" rows="3"></textarea>
+                <textarea class="input" name="benefits" placeholder="Benefits (one per line)" rows="3"></textarea>
+                <div class="form-actions">
+                    <button type="button" class="btn ghost" id="deleteJobBtn">Delete</button>
+                    <button type="submit" class="btn primary">Save</button>
+                </div>
+                <input type="hidden" name="id" />
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+
